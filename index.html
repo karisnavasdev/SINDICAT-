@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SINDICAT — A city of mafia cats</title>
+  <meta name="description" content="A survival and crafting game set in a city of mafia cats, where everything you produce sells for SIN, the money of the streets." />
+  <link rel="icon" href="https://sindicat.game/favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&family=Silkscreen:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #0d0e14;
+      --bg: #12131a;
+      --panel: #1b1e27;
+      --panel-2: #242834;
+      --line: #343a48;
+      --text: #e8eaf0;
+      --muted: #9aa2b1;
+      --white: #f2f3f7;
+      --gold: #e0b341;
+      --gold-l: #f0d488;
+      --teal: #4fd2c2;
+      --good: #57c97a;
+      --bad: #e7615b;
+      --blood: #d13a34;
+      --pixel: "Silkscreen", "Space Mono", ui-monospace, monospace;
+      --mono: "Space Mono", ui-monospace, monospace;
+      --body: "Nunito", system-ui, sans-serif;
+      --pad: 56px;
+      --asset: "https://sindicat.game";
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--ink); scroll-behavior: smooth; }
+    body { margin: 0; background: var(--ink); color: var(--text); font-family: var(--body); -webkit-font-smoothing: antialiased; }
+    img, video { display: block; max-width: 100%; }
+    a { color: var(--gold); }
+    a:hover { color: var(--gold-l); }
+    :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+    .pix { image-rendering: pixelated; }
+    .wrap { max-width: 1440px; margin: 0 auto; padding-left: var(--pad); padding-right: var(--pad); }
+    .label { font-family: var(--mono); font-size: 12px; letter-spacing: .24em; text-transform: uppercase; color: var(--gold); }
+    h2 { margin: 0; font-family: var(--pixel); font-weight: 700; letter-spacing: .06em; line-height: 1.15; color: var(--white); text-wrap: balance; font-size: 40px; }
+    h2.m { font-size: 36px; }
+    .p { margin: 0; font-size: 16px; line-height: 1.65; color: var(--muted); max-width: 620px; }
+    .head { display: flex; flex-direction: column; gap: 14px; }
+    .tt { font-family: var(--pixel); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--white); }
+
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 44px; border-radius: 6px; font-family: var(--pixel); letter-spacing: .08em; text-decoration: none; border: 0; cursor: pointer; transition: background-color .15s, border-color .15s, box-shadow .15s; }
+    .btn-play { padding: 18px 30px; background: var(--gold); color: var(--ink); font-size: 16px; font-weight: 700; box-shadow: 0 0 0 1px rgba(240,212,136,.5), 0 10px 30px rgba(224,179,65,.28); }
+    .btn-play:hover { background: var(--gold-l); color: var(--ink); }
+    .btn-play svg { width: 16px; height: 16px; }
+    .btn-ghost { padding: 17px 24px; background: rgba(13,14,20,.55); color: var(--text); font-size: 13px; border: 1px solid rgba(232,234,240,.35); }
+    .btn-ghost:hover { color: var(--white); border-color: var(--gold); }
+
+    .nav { position: absolute; left: 0; right: 0; top: 0; z-index: 5; background: linear-gradient(180deg, rgba(13,14,20,.85), rgba(13,14,20,0)); }
+    .nav .wrap { height: 76px; display: flex; align-items: center; gap: 28px; }
+    .brand { display: inline-flex; align-items: center; text-decoration: none; }
+    .brand img { display: block; height: 40px; width: auto; }
+    .links { display: flex; gap: 22px; flex-grow: 1; }
+    .links a { font-family: var(--pixel); font-size: 11px; letter-spacing: .1em; color: var(--text); text-decoration: none; padding: 6px 0; white-space: nowrap; }
+    .links a:hover, .links a.gold { color: var(--gold); }
+    .xbtn { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; flex-shrink: 0; color: var(--text); border: 1px solid rgba(232,234,240,.3); border-radius: 6px; }
+    .xbtn:hover { color: var(--white); border-color: var(--gold); }
+    .nav .btn-play { min-height: 44px; padding: 0 16px; font-size: 11px; letter-spacing: .08em; box-shadow: none; white-space: nowrap; }
+    .menu-btn { display: none; width: 44px; height: 44px; align-items: center; justify-content: center; margin-left: auto; cursor: pointer; background: rgba(13,14,20,.6); color: var(--text); border: 1px solid rgba(232,234,240,.3); border-radius: 6px; }
+    .menu { position: absolute; left: 12px; right: 12px; top: 68px; z-index: 6; padding: 10px; display: flex; flex-direction: column; background: rgba(18,19,26,.97); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 18px 40px rgba(0,0,0,.5); }
+    .menu[hidden] { display: none; }
+    .menu a { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 12px; font-family: var(--pixel); font-size: 13px; letter-spacing: .08em; color: var(--text); text-decoration: none; border-radius: 6px; }
+    .menu a:hover { background: var(--panel-2); color: var(--white); }
+    .menu .btn-play { justify-content: center; margin-top: 6px; color: var(--ink); font-size: 13px; }
+    .menu .btn-play:hover { background: var(--gold-l); color: var(--ink); }
+
+    .hero { position: relative; height: max(640px, 100vh); height: max(640px, 100svh); overflow: hidden; }
+    .hero-world { position: absolute; inset: 0; }
+    .hero-world > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; }
+    .hero .shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(13,14,20,.92) 0%, rgba(13,14,20,.72) 38%, rgba(13,14,20,.1) 70%), linear-gradient(0deg, var(--ink) 0%, rgba(13,14,20,0) 26%); }
+    .hero-in { position: absolute; left: 0; right: 0; bottom: 132px; }
+    .hero-in .col { max-width: 700px; display: flex; flex-direction: column; gap: 26px; }
+    .wordmark { display: block; width: min(460px, 86vw, 48.7vh); height: auto; margin: 4px 0 8px; }
+    .lede { margin: 0; font-size: 23px; line-height: 1.5; color: var(--text); max-width: 620px; }
+    .ctas { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+    .fine { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; color: var(--muted); }
+    .desk-note { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: rgba(79,210,194,.08); border: 1px solid rgba(79,210,194,.4); border-radius: 6px; font-size: 14px; line-height: 1.4; color: var(--text); }
+    .desk-note svg { flex-shrink: 0; }
+    .ea-back { margin: 0; font-size: 15px; line-height: 1.5; color: var(--text); }
+    .ea-back b { color: var(--gold); }
+    .sound { position: absolute; right: var(--pad); bottom: 28px; display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; background: rgba(13,14,20,.6); color: var(--text); border: 1px solid rgba(232,234,240,.35); border-radius: 6px; font-family: var(--pixel); font-size: 11px; letter-spacing: .12em; cursor: pointer; }
+    .sound:hover { border-color: var(--gold); color: var(--white); }
+    .sound .on-i, .sound.on .off-i { display: none; }
+    .sound.on .on-i { display: block; }
+
+    .pillars .wrap { padding-top: 40px; padding-bottom: 96px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 48px; }
+    .pillar { display: flex; flex-direction: column; gap: 14px; padding-top: 22px; border-top: 2px solid var(--line); }
+    .pillar .tt { font-size: 17px; }
+    .pillar.key { border-top-color: var(--gold); }
+    .pillar.key .tt { color: var(--gold); }
+
+    section.alt { background: var(--bg); }
+    .block .wrap { padding-top: 96px; padding-bottom: 96px; display: flex; flex-direction: column; gap: 40px; }
+    .how-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; }
+    .how-head .p { font-size: 17px; max-width: 520px; }
+    .beats { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
+    .beat { display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; transition: border-color .2s; }
+    .beat:hover, .beat:focus-within { border-color: var(--gold); }
+    .beat .media { position: relative; display: block; width: 100%; height: 190px; padding: 0; margin: 0; overflow: hidden; background: var(--ink); border: 0; cursor: pointer; }
+    .beat video { width: 100%; height: 100%; object-fit: cover; }
+    .beat .hint { position: absolute; left: 10px; bottom: 10px; display: flex; align-items: center; gap: 7px; padding: 6px 9px; background: rgba(13,14,20,.8); border-radius: 4px; font-family: var(--mono); font-size: 10px; letter-spacing: .14em; color: var(--text); transition: opacity .2s; }
+    .beat.playing .hint { opacity: 0; }
+    .beat .txt { display: flex; flex-direction: column; gap: 10px; padding: 18px 18px 22px; }
+    .beat .no { font-family: var(--mono); font-size: 12px; color: var(--gold); }
+    .beat .nm { display: flex; align-items: baseline; gap: 10px; }
+    .beat .tt { font-size: 16px; }
+    .beat p { margin: 0; font-size: 15px; line-height: 1.6; color: var(--muted); }
+
+    .trades { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .trade { display: flex; gap: 18px; align-items: flex-start; padding: 22px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; transition: border-color .2s, transform .2s; }
+    .trade:hover { border-color: var(--gold); transform: translateY(-4px); }
+    .trade .ic { width: 64px; height: 64px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--panel-2); border-radius: 8px; }
+    .trade .ic img { width: 48px; height: 48px; }
+    .trade .tt { font-size: 15px; }
+    .trade div { display: flex; flex-direction: column; gap: 8px; }
+    .trade p { margin: 0; font-size: 15px; line-height: 1.6; color: var(--muted); }
+
+    .family .wrap { padding-top: 96px; padding-bottom: 96px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 56px; align-items: center; }
+    .office { position: relative; height: 560px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); }
+    .office img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+    .office .cap { position: absolute; left: 20px; bottom: 20px; font-family: var(--mono); font-size: 12px; letter-spacing: .2em; color: var(--text); background: rgba(13,14,20,.75); padding: 8px 12px; border-radius: 4px; }
+    .people { display: flex; flex-direction: column; gap: 28px; }
+    .person { display: flex; gap: 18px; align-items: flex-start; }
+    .person .face { width: 56px; height: 56px; flex-shrink: 0; }
+    .person .glyph { width: 56px; height: 56px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; }
+    .person .glyph svg { width: 40px; height: 40px; }
+    .person > div:last-child { display: flex; flex-direction: column; gap: 6px; }
+    .person .tt { font-size: 15px; }
+    .person p { margin: 0; font-size: 15px; line-height: 1.6; color: var(--muted); }
+
+    .split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 56px; align-items: end; }
+    .shot { border-radius: 8px; overflow: hidden; border: 1px solid var(--line); height: 620px; }
+    .shot img { width: 100%; height: 100%; object-fit: cover; }
+    .row { display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+    .chips { display: flex; gap: 10px; flex-wrap: wrap; }
+    .chip { font-family: var(--mono); font-size: 13px; color: var(--text); padding: 9px 14px; border: 1px solid var(--line); border-radius: 20px; background: var(--panel); }
+    .servers { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+    .servers b { font-weight: 400; color: var(--teal); }
+
+    #sin h2 { color: var(--gold); }
+    .cards2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .note { padding: 24px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; display: flex; flex-direction: column; gap: 10px; }
+    .note .tt { font-size: 13px; letter-spacing: .08em; }
+    .note .p { font-size: 15px; }
+    .note.gold { background: rgba(224,179,65,.06); border-color: rgba(224,179,65,.45); }
+    .note.gold .tt { color: var(--gold); }
+    .note.gold .p { color: var(--text); }
+
+    .fair .wrap { padding-top: 96px; padding-bottom: 96px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 56px; align-items: start; }
+    .checks { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 18px; }
+    .checks li { display: flex; gap: 14px; align-items: flex-start; font-size: 16px; line-height: 1.6; color: var(--text); }
+    .checks svg { flex-shrink: 0; margin-top: 4px; }
+
+    .wanted .wrap { padding-top: 96px; padding-bottom: 96px; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 64px; align-items: start; }
+    .w-left { display: flex; flex-direction: column; gap: 22px; }
+    .seal { display: block; height: 118px; width: auto; }
+    .w-left .seal { align-self: flex-start; }
+    .w-fine { line-height: 1.6; color: #5b6270; }
+    .wall { display: flex; flex-direction: column; gap: 6px; padding: 8px 22px 22px; border: 1px solid var(--line); border-top: 3px solid var(--blood); border-radius: 8px; background: radial-gradient(110% 80% at 50% 0%, rgba(224,179,65,.09), transparent 60%), linear-gradient(180deg, #1e212b, #171920); }
+    .wall .cap { margin: 12px 8px 0; }
+    .posters { margin: 0; padding: 34px 8px 14px; list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(10px, 1.8vw, 26px); align-items: end; }
+    .poster { container-type: inline-size; position: relative; display: flex; flex-direction: column; align-items: center; gap: 9px; padding: 18px 14px 14px; text-align: center; color: #2b2016; background: radial-gradient(circle at 16% 10%, rgba(120,84,40,.2), transparent 34%), radial-gradient(circle at 88% 84%, rgba(120,84,40,.24), transparent 40%), linear-gradient(180deg, #efe4c8, #e0d0aa); box-shadow: 0 24px 34px -10px rgba(0,0,0,.65), inset 0 0 0 1px rgba(60,40,20,.25), inset 0 0 40px rgba(140,100,50,.32); }
+    .poster.r1 { order: 2; z-index: 1; transform: rotate(1.4deg) translateY(-20px) scale(1.06); }
+    .poster.r2 { order: 1; transform: rotate(-2.2deg); }
+    .poster.r3 { order: 3; transform: rotate(-1deg) translateY(4px); }
+    .poster::before { content: ""; position: absolute; top: -8px; left: 50%; width: 16px; height: 16px; margin-left: -8px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ff8a7e, #b3241d 55%, #6d1410); box-shadow: 0 4px 5px rgba(0,0,0,.55); }
+    .w-wanted { font-family: var(--pixel); font-weight: 700; font-size: 15cqi; line-height: 1; letter-spacing: .08em; }
+    .w-for { margin-top: -3px; font-family: var(--mono); font-size: clamp(6px, 5.6cqi, 9px); letter-spacing: .22em; text-transform: uppercase; color: #6d5434; }
+    .w-photo { position: relative; width: 100%; aspect-ratio: 1; display: grid; place-items: center; overflow: hidden; background: #d3c198; border: 2px solid #2b2016; }
+    .w-photo img { width: 82%; height: auto; filter: brightness(0); opacity: .88; }
+    .poster.r2 .w-photo img { transform: scaleX(-1); }
+    .w-rank { position: absolute; right: 6px; bottom: 8px; padding: 3px 8px; border: 2px solid #a8231c; border-radius: 3px; background: rgba(239,228,200,.55); font-family: var(--pixel); font-weight: 700; font-size: clamp(9px, 9.3cqi, 15px); color: #a8231c; transform: rotate(-9deg); }
+    .w-handle { font-family: var(--mono); font-weight: 700; font-size: clamp(10px, 9.3cqi, 15px); line-height: 1.3; overflow-wrap: anywhere; }
+    .w-reward { width: 100%; padding-top: 8px; border-top: 1px dashed #8a6d47; font-family: var(--mono); font-size: clamp(6px, 6.2cqi, 10px); letter-spacing: .16em; text-transform: uppercase; color: #6d5434; }
+    .w-reward b { color: #a8231c; }
+    .w-foot { margin: 0 8px; font-family: var(--mono); font-size: 12px; line-height: 1.6; color: var(--muted); }
+
+    .final { position: relative; height: 560px; overflow: hidden; }
+    .final > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 55%; }
+    .final .shade { position: absolute; inset: 0; background: linear-gradient(180deg, var(--ink) 0%, rgba(13,14,20,.55) 30%, rgba(13,14,20,.55) 70%, var(--ink) 100%); }
+    .final-in { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; text-align: center; padding: 0 16px; }
+    .final .seal { height: 120px; margin: 0 auto; }
+    .final h2 { font-size: 60px; text-shadow: 0 0 30px rgba(224,179,65,.4), 0 4px 0 #000; color: var(--gold-l); }
+    .final .p { font-size: 19px; color: var(--text); max-width: 640px; }
+    .final .ctas { justify-content: center; }
+
+    footer .wrap { padding-top: 32px; padding-bottom: 32px; border-top: 1px solid var(--line); display: flex; align-items: center; gap: 32px; flex-wrap: wrap; }
+    footer .brand img { height: 30px; }
+    footer a.l { font-family: var(--mono); font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+
+    .only-phone { display: none; }
+    .nav .short { display: none; }
+
+    @media (max-width: 1299px) {
+      .nav .long { display: none; }
+      .nav .short { display: inline; }
+      .links a.board { display: none; }
+    }
+    @media (max-width: 1099px) {
+      :root { --pad: 32px; }
+      .links, .nav .xbtn, .nav > .wrap > .btn-play { display: none; }
+      .menu-btn { display: flex; }
+      .nav .menu .btn-play { display: flex; }
+      .hero-in { bottom: 96px; }
+      .lede { font-size: 20px; }
+      .pillars .wrap { gap: 32px; }
+      .beats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .trades { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .office, .shot { height: 480px; }
+      .final h2 { font-size: 46px; }
+    }
+    @media (max-width: 859px) {
+      .pillars .wrap, .family .wrap, .split, .fair .wrap, .cards2, .wanted .wrap { grid-template-columns: 1fr; }
+      .family .wrap, .wanted .wrap { gap: 32px; }
+      .how-head { flex-direction: column; align-items: flex-start; gap: 16px; }
+    }
+    @media (max-width: 699px) {
+      :root { --pad: 16px; }
+      .only-phone { display: flex; }
+      .only-desk { display: none !important; }
+      .nav { background: none; }
+      .nav .wrap { height: 64px; }
+      .hero { height: 760px; }
+      .hero-world > img { object-position: 38% 50%; }
+      .hero .shade { background: linear-gradient(180deg, rgba(13,14,20,.35) 0%, rgba(13,14,20,.15) 30%, rgba(13,14,20,.9) 62%, var(--ink) 100%); }
+      .hero-in { bottom: 36px; }
+      .hero-in .col { gap: 18px; }
+      .sound { top: 76px; bottom: auto; right: 16px; min-height: 40px; padding: 0 12px; font-size: 10px; }
+      .lede { font-size: 17px; line-height: 1.55; }
+      .ctas { flex-direction: column; align-items: stretch; gap: 12px; }
+      .btn-play { min-height: 52px; }
+      .btn-ghost { min-height: 48px; }
+      .pillars .wrap { padding-top: 24px; padding-bottom: 56px; }
+      .block .wrap, .family .wrap, .fair .wrap, .wanted .wrap { padding-top: 56px; padding-bottom: 56px; }
+      .block .wrap { gap: 22px; }
+      h2 { font-size: 28px; }
+      h2.m { font-size: 24px; }
+      .beats { grid-template-columns: 1fr; }
+      .beat .media { height: 200px; }
+      .trades { grid-template-columns: 1fr; }
+      .trade { flex-direction: column; gap: 10px; padding: 14px; }
+      .trade .ic { width: auto; height: auto; background: none; }
+      .trade p { display: none; }
+      .office { height: 240px; }
+      .office .cap { display: none; }
+      .shot { height: 280px; }
+      .final { height: 440px; }
+      .final > img { object-position: 30% 55%; }
+      .final .shade { background: linear-gradient(180deg, var(--ink) 0%, rgba(13,14,20,.6) 35%, rgba(13,14,20,.8) 100%); }
+      .final-in { justify-content: flex-end; align-items: stretch; gap: 16px; padding: 0 16px 40px; }
+      .final h2 { font-size: 30px; }
+      .final .seal { height: 84px; }
+      .fine-note { text-align: center; font-size: 13px; color: var(--muted); }
+      footer .wrap { flex-direction: column; align-items: flex-start; gap: 14px; }
+      .poster.r1 { transform: rotate(1.4deg) translateY(-12px) scale(1.05); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .trade, .beat { transition: none; }
+      .trade:hover { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap">
+      <a class="brand" href="#top" aria-label="SINDICAT"><img src="https://sindicat.game/brand/cat-white.webp" alt="" width="360" height="318" /></a>
+      <nav class="links" aria-label="Main">
+        <a href="#how">HOW YOU PLAY</a>
+        <a href="#trades">THE TRADES</a>
+        <a href="#family">THE FAMILY</a>
+        <a href="#sin">$SIN</a>
+        <a href="https://sindicat.game/codex.html">CODEX</a>
+        <a class="gold board" href="#wanted">LEADERBOARD</a>
+      </nav>
+      <a class="xbtn" href="https://x.com/SINDICAT_GAME" target="_blank" rel="noopener" aria-label="SINDICAT on X">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.8 3h3.1l-6.8 7.8L22 21h-6.2l-4.9-6.4L5.3 21H2.2l7.3-8.3L2 3h6.3l4.4 5.9zm-1.1 16.2h1.7L7.4 4.7H5.6z"/></svg>
+      </a>
+      <a class="btn btn-play" href="https://play.sindicat.game/"><span class="long">APPLY FOR CITIZENSHIP</span><span class="short">CITIZENSHIP</span></a>
+      <button class="menu-btn" id="menu-btn" type="button" aria-label="Open the menu" aria-expanded="false" aria-controls="menu">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14"/></svg>
+      </button>
+    </div>
+    <nav class="menu" id="menu" aria-label="Menu" hidden>
+      <a href="#how">How you play</a>
+      <a href="#trades">The trades</a>
+      <a href="#family">The family</a>
+      <a href="#sin">$SIN</a>
+      <a href="https://sindicat.game/codex.html">The codex</a>
+      <a href="#wanted">Leaderboard</a>
+      <a href="https://x.com/SINDICAT_GAME" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.8 3h3.1l-6.8 7.8L22 21h-6.2l-4.9-6.4L5.3 21H2.2l7.3-8.3L2 3h6.3l4.4 5.9zm-1.1 16.2h1.7L7.4 4.7H5.6z"/></svg>
+        @SINDICAT_GAME
+      </a>
+      <a class="btn btn-play" href="https://play.sindicat.game/">APPLY FOR CITIZENSHIP</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="top">
+      <div class="hero-world">
+        <img src="https://sindicat.game/comic/assets/cases/case-24.webp" alt="Cattown at night: the square, its statue, the lit shop signs and the greenhouse, from above" />
+      </div>
+      <div class="shade"></div>
+      <div class="hero-in">
+        <div class="wrap">
+          <div class="col">
+            <div class="label">A city of mafia cats<span class="only-desk"> · free to play in your browser</span></div>
+            <h1>
+              <img class="wordmark" src="https://sindicat.game/brand/sindicat-wordmark.webp" alt="SINDICAT" width="1000" height="534" />
+            </h1>
+            <p class="lede">A survival and crafting game set in a city of mafia cats, where everything you produce sells for SIN, the money of the streets.</p>
+            <div class="ctas">
+              <a class="btn btn-play" href="https://play.sindicat.game/">APPLY FOR CITIZENSHIP
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M3 8h9M8 3l5 5-5 5"/></svg>
+              </a>
+              <div class="desk-note only-phone">
+                <svg width="22" height="18" viewBox="0 0 22 18" fill="none" stroke="#4fd2c2" stroke-width="2" aria-hidden="true"><rect x="1" y="1" width="20" height="12" rx="1"/><path d="M7 17h8M11 13v4"/></svg>
+                Play on a computer, with a keyboard and mouse.
+              </div>
+              <a class="btn btn-ghost" href="https://sindicat.game/codex.html">READ THE CODEX</a>
+            </div>
+            <p class="ea-back"><b>Already applied?</b> Use the same button to check your papers.</p>
+          </div>
+        </div>
+      </div>
+      <button class="sound on" id="sound" type="button" aria-pressed="true">
+        <svg class="off-i" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="m16 9 5 6M21 9l-5 6"/></svg>
+        <svg class="on-i" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+        <span>SOUND ON</span>
+      </button>
+    </section>
+
+    <section class="pillars" aria-label="The game at a glance">
+      <div class="wrap">
+        <div class="pillar">
+          <div class="tt">A real game first</div>
+          <p class="p">Everything is crafted, grown, fished or hacked. Nothing can be bought to go faster.</p>
+        </div>
+        <div class="pillar">
+          <div class="tt">The city brings the pressure</div>
+          <p class="p">Your hideout is private and nobody can raid it. The world is never reset. The real danger is the police, who watch anyone carrying too much cash.</p>
+        </div>
+        <div class="pillar key">
+          <div class="tt">A token and an NFT collection</div>
+          <p class="p">A $SIN token and an NFT collection are on the way, both on Robinhood Chain. How they tie into the game will be revealed later.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block alt" id="how">
+      <div class="wrap">
+        <div class="how-head">
+          <div class="head">
+            <div class="label">The loop</div>
+            <h2>How you play</h2>
+          </div>
+          <p class="p" id="how-lead">Five beats, then you start again, all filmed in the game. Hover over a card to watch it.</p>
+        </div>
+        <div class="beats">
+          <article class="beat">
+            <button class="media" type="button" aria-label="Play the clip: Gather">
+              <video src="https://sindicat.game/assets/tuto/scavenge.mp4" poster="https://sindicat.game/welcome/poster-gather.jpg" muted loop playsinline preload="none"></video>
+              <span class="hint"><svg width="8" height="10" viewBox="0 0 8 10" fill="#e0b341" aria-hidden="true"><path d="M0 0l8 5-8 5z"/></svg><span class="hint-t">HOVER TO PLAY</span></span>
+            </button>
+            <div class="txt"><div class="nm"><span class="no">01</span><span class="tt">Gather</span></div><p>Loot scrap from trash cans and pick up deadwood and stones.</p></div>
+          </article>
+          <article class="beat">
+            <button class="media" type="button" aria-label="Play the clip: Craft">
+              <video src="https://sindicat.game/assets/tuto/axe.mp4" poster="https://sindicat.game/welcome/poster-craft.jpg" muted loop playsinline preload="none"></video>
+              <span class="hint"><svg width="8" height="10" viewBox="0 0 8 10" fill="#e0b341" aria-hidden="true"><path d="M0 0l8 5-8 5z"/></svg><span class="hint-t">HOVER TO PLAY</span></span>
+            </button>
+            <div class="txt"><div class="nm"><span class="no">02</span><span class="tt">Craft</span></div><p>Make your first tools at the Forge, then a Campfire, a Furnace and a Catbench.</p></div>
+          </article>
+          <article class="beat">
+            <button class="media" type="button" aria-label="Play the clip: Produce">
+              <video src="https://sindicat.game/assets/tuto/harvest.mp4" poster="https://sindicat.game/welcome/poster-produce.jpg" muted loop playsinline preload="none"></video>
+              <span class="hint"><svg width="8" height="10" viewBox="0 0 8 10" fill="#e0b341" aria-hidden="true"><path d="M0 0l8 5-8 5z"/></svg><span class="hint-t">HOVER TO PLAY</span></span>
+            </button>
+            <div class="txt"><div class="nm"><span class="no">03</span><span class="tt">Produce</span></div><p>Produce catnip or data in batches at your hideout, even while you are away.</p></div>
+          </article>
+          <article class="beat">
+            <button class="media" type="button" aria-label="Play the clip: Sell">
+              <video src="https://sindicat.game/assets/tour/sin_earn.mp4" poster="https://sindicat.game/assets/tour/sin_earn.jpg" muted loop playsinline preload="none"></video>
+              <span class="hint"><svg width="8" height="10" viewBox="0 0 8 10" fill="#e0b341" aria-hidden="true"><path d="M0 0l8 5-8 5z"/></svg><span class="hint-t">HOVER TO PLAY</span></span>
+            </button>
+            <div class="txt"><div class="nm"><span class="no">04</span><span class="tt">Sell</span></div><p>Sell each good at its own shop in town, and get paid in SIN.</p></div>
+          </article>
+          <article class="beat">
+            <button class="media" type="button" aria-label="Play the clip: Stay clean">
+              <video src="https://sindicat.game/welcome/bank.mp4" poster="https://sindicat.game/welcome/poster-stay.jpg" muted loop playsinline preload="none"></video>
+              <span class="hint"><svg width="8" height="10" viewBox="0 0 8 10" fill="#e0b341" aria-hidden="true"><path d="M0 0l8 5-8 5z"/></svg><span class="hint-t">HOVER TO PLAY</span></span>
+            </button>
+            <div class="txt"><div class="nm"><span class="no">05</span><span class="tt">Stay clean</span></div><p>Cash draws the police. Bank it, spend it, or run it through a front business.</p></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="trades">
+      <div class="wrap">
+        <div class="head"><div class="label">Six ways through the city</div><h2>The trades</h2></div>
+        <div class="trades">
+          <div class="trade"><div class="ic"><img class="pix" src="https://sindicat.game/assets/items/item_catnip_skunk.png" alt="" /></div><div><div class="tt">Growing</div><p>Sow in pots or a greenhouse, harvest at the right moment. Catnip sells at the Garden Shop.</p></div></div>
+          <div class="trade"><div class="ic"><img class="pix" src="https://sindicat.game/assets/items/item_fish.png" alt="" /></div><div><div class="tt">Fishing</div><p>Fishing is an active mini-game with a rod, line, reel and bait. It is the only trade that draws no heat.</p></div></div>
+          <div class="trade"><div class="ic"><img class="pix" src="https://sindicat.game/assets/items/item_data.png" alt="" /></div><div><div class="tt">Hacking</div><p>Build a computer from found or bought parts. Data sells at the Computer Shop.</p></div></div>
+          <div class="trade"><div class="ic"><img class="pix" src="https://sindicat.game/assets/items/item_hache_steel.png" alt="" /></div><div><div class="tt">Crafting</div><p>Make tools at the Forge, and weapons, armor, potions and parts at your hideout. Nothing good is sold ready-made.</p></div></div>
+          <div class="trade"><div class="ic"><img class="pix" src="https://sindicat.game/assets/ui/face_tailor.png" alt="" /></div><div><div class="tt">Combat</div><p>Fight in melee or with firearms. Wear armor in sets, and use special abilities and a limited number of potions.</p></div></div>
+          <div class="trade"><div class="ic"><img class="pix" src="https://sindicat.game/assets/items/item_pioche_steel.png" alt="" /></div><div><div class="tt">Exploration</div><p>Cross the biomes in order, discover their resources and come back by train.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="family" id="family">
+      <div class="wrap">
+        <div class="office">
+          <img src="https://sindicat.game/comic/assets/cases/case-04.webp" alt="The Don at his desk, under a green banker's lamp" />
+          <div class="cap">THE DON'S OFFICE</div>
+        </div>
+        <div class="people">
+          <div class="head"><div class="label">The people of Cattown</div><h2 class="m">The family, and everyone else</h2></div>
+          <div class="person"><img class="face pix" src="https://sindicat.game/assets/ui/face_don.png" alt="" /><div><div class="tt">The Don</div><p>The godfather of the family you join. His contracts, taken from the board in order, show you every side of the game.</p></div></div>
+          <div class="person"><div class="glyph"><svg viewBox="0 0 40 40" fill="none" stroke="#4fd2c2" stroke-width="2.4" aria-hidden="true"><path d="M20 4l13 5v9c0 8-5.6 14.3-13 18-7.4-3.7-13-10-13-18V9z"/><path d="M14 20l4 4 8-8"/></svg></div><div><div class="tt">The police</div><p>The police are untouchable, and they never kill. They arrest anyone carrying too much heat. Prison costs you time, never what you own.</p></div></div>
+          <div class="person"><img class="face pix" src="https://sindicat.game/assets/ui/face_tailor.png" alt="" /><div><div class="tt">The Tailor</div><p>The boss, in his factory on the mountain of ash. His suit, won piece by piece, is the great reward.</p></div></div>
+          <div class="person"><div class="glyph"><svg viewBox="0 0 40 40" fill="none" stroke="#e0b341" stroke-width="2.4" aria-hidden="true"><path d="M6 10h20v12H15l-6 5v-5H6z"/><path d="M30 16h4v11h-3v4l-5-4h-8v-3"/></svg></div><div><div class="tt">The other players</div><p>The city is shared: you cross paths, talk and trade at the flea market. Nobody can enter your home or steal from you.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block alt" aria-label="The world">
+      <div class="wrap">
+        <div class="split">
+          <div class="head"><div class="label">Seen in game</div><h2 class="m">Cattown, and what lies beyond</h2></div>
+          <p class="p">Cattown is the hub city, seen at night. Around the square and Enzo’s statue stand lit shop signs, a bank, a train station, a contracts board and the prison. Beyond the city, the biomes form a chain. The deeper you go, the deadlier and more profitable they get.</p>
+        </div>
+        <div class="shot"><img src="https://sindicat.game/welcome/cattown-docks.webp" alt="In game: Cattown's docks at night" /></div>
+        <div class="row">
+          <div class="chips">
+            <span class="chip">A misty forest</span>
+            <span class="chip">A swamp</span>
+            <span class="chip">Abandoned docks</span>
+            <span class="chip">A frozen forest</span>
+            <span class="chip">A mountain of ash</span>
+          </div>
+          <div class="servers">Servers: <b>Europe · North America · Asia-Pacific</b></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="sin">
+      <div class="wrap">
+        <div class="split">
+          <div class="head"><div class="label">The economy</div><h2 class="m">SIN, the money of the streets</h2></div>
+          <p class="p">Everything you sell in Cattown pays in SIN. Carry too much of it and the police come looking: bank it, spend it, or wash it through a front.</p>
+        </div>
+        <div class="cards2">
+          <div class="note"><div class="tt">A token and an NFT collection</div><p class="p">A $SIN token and an NFT collection are on the way, both on Robinhood Chain. How they tie into the game will be revealed later.</p></div>
+          <div class="note gold"><div class="tt">What $SIN is not</div><p class="p">It is not an investment: no yield, no income, no promised price, no outside asset behind it. Its value comes from the game and from what players produce.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="fair alt" aria-label="Fair by design">
+      <div class="wrap">
+        <div class="head"><div class="label">Fair by design</div><h2 class="m">The browser displays. The server decides.</h2></div>
+        <ul class="checks">
+          <li><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#e0b341" stroke-width="2.4" aria-hidden="true"><path d="M3 9l4 4 8-8"/></svg><span>The server computes money, items, production, crafting, loot, combat and the market. A modified game cannot create anything.</span></li>
+          <li><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#e0b341" stroke-width="2.4" aria-hidden="true"><path d="M3 9l4 4 8-8"/></svg><span>No pay-to-win: progression and reputation cannot be bought.</span></li>
+          <li><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#e0b341" stroke-width="2.4" aria-hidden="true"><path d="M3 9l4 4 8-8"/></svg><span>Nothing is confiscated in prison. Death never takes your money or your hideout. The world is never reset.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="wanted" id="wanted" aria-label="Most wanted, the citizenship leaderboard">
+      <div class="wrap">
+        <div class="w-left">
+          <img class="seal" src="https://sindicat.game/brand/cat-white.webp" alt="" width="360" height="318" />
+          <div class="head"><div class="label">Citizenship leaderboard</div><h2>Most wanted</h2></div>
+          <p class="p">Citizenship is earned, not bought. Apply with X, follow @SINDICAT_GAME, add your Robinhood Chain wallet, then share your link. The top of the leaderboard gets citizenship first.</p>
+          <div class="ctas">
+            <a class="btn btn-play" href="https://play.sindicat.game/">APPLY FOR CITIZENSHIP
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M3 8h9M8 3l5 5-5 5"/></svg>
+            </a>
+          </div>
+          <p class="ea-back"><b>Already applied?</b> Use the same button to check your papers.</p>
+          <p class="fine w-fine">Leaderboard updated every minute. Names shown: X handles.</p>
+        </div>
+        <div class="wall">
+          <div class="label cap">The leaderboard · top 3</div>
+          <ol class="posters" id="posters">
+            <li class="poster r1"><span class="w-wanted">WANTED</span><span class="w-for">for citizenship</span><span class="w-photo"><img src="https://sindicat.game/brand/cat-white.webp" alt="" /><span class="w-rank">#1</span></span><span class="w-handle">@monaverse_nft</span><span class="w-reward">Reward · <b>citizenship</b></span></li>
+            <li class="poster r2"><span class="w-wanted">WANTED</span><span class="w-for">for citizenship</span><span class="w-photo"><img src="https://sindicat.game/brand/cat-white.webp" alt="" /><span class="w-rank">#2</span></span><span class="w-handle">@ProudMirrorBtc</span><span class="w-reward">Reward · <b>citizenship</b></span></li>
+            <li class="poster r3"><span class="w-wanted">WANTED</span><span class="w-for">for citizenship</span><span class="w-photo"><img src="https://sindicat.game/brand/cat-white.webp" alt="" /><span class="w-rank">#3</span></span><span class="w-handle">@avalanchexbt</span><span class="w-reward">Reward · <b>citizenship</b></span></li>
+          </ol>
+          <p class="w-foot" id="w-foot">The most wanted cats right now. The full leaderboard goes up once the wall fills.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="final" aria-label="Play">
+      <img src="https://sindicat.game/comic/assets/cases/case-10.webp" alt="" />
+      <div class="shade"></div>
+      <div class="final-in">
+        <img class="seal" src="https://sindicat.game/brand/cat-white.webp" alt="" width="360" height="318" />
+        <h2>CATTOWN IS WAITING</h2>
+        <p class="p only-desk">You arrive with nothing. Take the quick tour of Cattown, then apply for citizenship.</p>
+        <div class="ctas">
+          <a class="btn btn-play" href="https://play.sindicat.game/">APPLY FOR CITIZENSHIP
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M3 8h9M8 3l5 5-5 5"/></svg>
+          </a>
+          <a class="btn btn-ghost only-desk" href="https://sindicat.game/codex.html">READ THE CODEX</a>
+        </div>
+        <span class="fine-note only-phone">Play on a computer, with a keyboard and mouse.</span>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span class="brand" role="img" aria-label="SINDICAT"><img src="https://sindicat.game/brand/cat-white.webp" alt="" width="360" height="318" /></span>
+      <a class="l only-desk" href="https://play.sindicat.game/">Citizenship</a>
+      <a class="l" href="https://sindicat.game/codex.html">The codex</a>
+      <a class="l" href="https://x.com/SINDICAT_GAME" target="_blank" rel="noopener">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.8 3h3.1l-6.8 7.8L22 21h-6.2l-4.9-6.4L5.3 21H2.2l7.3-8.3L2 3h6.3l4.4 5.9zm-1.1 16.2h1.7L7.4 4.7H5.6z"/></svg>
+        @SINDICAT_GAME
+      </a>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var mb = document.getElementById("menu-btn");
+      var menu = document.getElementById("menu");
+      function setMenu(open) {
+        menu.hidden = !open;
+        mb.setAttribute("aria-expanded", String(open));
+        mb.setAttribute("aria-label", open ? "Close the menu" : "Open the menu");
+      }
+      mb.addEventListener("click", function () { setMenu(menu.hidden); });
+      menu.addEventListener("click", function (e) { if (e.target.closest("a")) setMenu(false); });
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && !menu.hidden) { setMenu(false); mb.focus(); }
+      });
+      document.addEventListener("click", function (e) {
+        if (!menu.hidden && !menu.contains(e.target) && !mb.contains(e.target)) setMenu(false);
+      });
+
+      var hover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+      var calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var hoverPlay = hover && !calm;
+      if (!hoverPlay) {
+        var lead = document.getElementById("how-lead");
+        if (lead) lead.textContent = "Five beats, then you start again, all filmed in the game. " + (hover ? "Click" : "Tap") + " a card to watch it.";
+      }
+      document.querySelectorAll(".beat").forEach(function (card) {
+        var v = card.querySelector("video");
+        var btn = card.querySelector(".media");
+        var hint = card.querySelector(".hint-t");
+        if (!v || !btn) return;
+        if (!hoverPlay && hint) hint.textContent = hover ? "CLICK TO PLAY" : "TAP TO PLAY";
+        var name = (btn.getAttribute("aria-label") || "").replace("Play the clip: ", "");
+        function play(restart) {
+          if (restart) { try { v.currentTime = 0; } catch (e) {} }
+          var p = v.play();
+          if (p && p.catch) p.catch(function () {});
+          card.classList.add("playing");
+          btn.setAttribute("aria-label", "Pause the clip: " + name);
+        }
+        function stop() {
+          v.pause();
+          card.classList.remove("playing");
+          btn.setAttribute("aria-label", "Play the clip: " + name);
+        }
+        btn.addEventListener("click", function () { if (v.paused) play(false); else stop(); });
+        if (hoverPlay) {
+          card.addEventListener("mouseenter", function () { play(true); });
+          card.addEventListener("mouseleave", stop);
+        }
+      });
+
+      var sound = document.getElementById("sound");
+      sound.addEventListener("click", function () {
+        var on = !sound.classList.contains("on");
+        sound.classList.toggle("on", on);
+        sound.setAttribute("aria-pressed", String(on));
+        sound.querySelector("span").textContent = on ? "SOUND ON" : "SOUND OFF";
+      });
+
+      var cat = "https://sindicat.game/brand/cat-white.webp";
+      fetch("https://sindicat-server-production.up.railway.app/api/early", { cache: "no-store" })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (d) {
+          if (!d || !Array.isArray(d.top) || !d.top.length) return;
+          var ol = document.getElementById("posters");
+          ol.textContent = "";
+          function add(parent, tag, cls, text) {
+            var el = document.createElement(tag);
+            if (cls) el.className = cls;
+            if (text != null) el.textContent = text;
+            parent.appendChild(el);
+            return el;
+          }
+          [1, 2, 3].forEach(function (rank) {
+            var row = d.top[rank - 1];
+            var li = document.createElement("li");
+            li.className = "poster r" + rank;
+            add(li, "span", "w-wanted", "WANTED");
+            add(li, "span", "w-for", "for citizenship");
+            var photo = add(li, "span", "w-photo");
+            var img = add(photo, "img");
+            img.src = cat;
+            img.alt = "";
+            if (row) add(photo, "span", "w-rank", "#" + rank);
+            add(li, "span", "w-handle", row && row.name ? String(row.name) : "Your handle here");
+            add(add(li, "span", "w-reward", "Reward · "), "b", "", "citizenship");
+            ol.appendChild(li);
+          });
+        })
+        .catch(function () {});
+    })();
+  </script>
+</body>
+</html>
